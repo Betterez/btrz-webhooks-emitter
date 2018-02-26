@@ -1,0 +1,44 @@
+{
+  "name": "btrz-webhooks-emitter",
+  "version": "0.0.1",
+  "description": "Betterez simple client to emit events to the webhooks pipeline",
+  "main": "index.js",
+  "scripts": {
+    "test": "NODE_ENV=test multi='xunit=test-results/xunit.xml spec=-' node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- --ui bdd -R mocha-multi -t 5000",
+    "test-w": "NODE_ENV=test node_modules/mocha/bin/mocha -w",
+    "publish": "publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Betterez/btrz-webhooks-emitter.git"
+  },
+  "keywords": [
+    "AWS",
+    "SQS",
+    "Queues",
+    "Events",
+    "Webhooks"
+  ],
+  "author": {
+    "name": "hgarcia",
+    "email": "hernan@dynamicprogrammer.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Betterez/btrz-webhooks-emitter/issues"
+  },
+  "homepage": "https://github.com/Betterez/btrz-webhooks-emitter",
+  "dependencies": {
+    "btrz-sqs": "^1.2.0"
+  },
+  "devDependencies": {
+    "chai": "latest",
+    "chance": "0.7.1",
+    "istanbul": "^0.4.1",
+    "mocha": "latest",
+    "mocha-multi": "latest",
+    "publish": "^0.5.0",
+    "sinon": "latest",
+    "xunit-file": "latest"
+  }
+}

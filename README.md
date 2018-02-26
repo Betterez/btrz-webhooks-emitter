@@ -12,13 +12,12 @@ This lib will use the following ENV variables:
 .
 # How to use
 
-``` const attrs = {
+    const attrs = {
       providerId: "123",
       data: {foo: "bar"}
     };
 
     btrzEmitter.emitEvent("transaction.created", attrs);
-```
 
 `btrzEmitter.emitEvent()` will return a promise with the result.
 

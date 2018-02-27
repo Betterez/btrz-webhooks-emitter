@@ -2,7 +2,8 @@
 
 describe("index", () => {
   const expect = require("chai").expect,
-    btrzEmitter = require("../index.js");
+    btrzEmitter = require("../index.js"),
+    uuidReg = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
   describe("emitEvent", () => {
     it("should return the result of the msg sent to sqs", (done) => {
@@ -27,7 +28,7 @@ describe("index", () => {
         }, 
         msg = btrzEmitter.buildMessage("transaction.created", attrs);
 
-      expect(msg.id).to.not.be.eql(undefined);
+      expect(msg.id).to.match(uuidReg);
       expect(msg.providerId).to.be.eql(attrs.providerId);
       expect(msg.data).to.be.eql(attrs.data);
       expect(msg.ts).to.not.be.eql(undefined);
@@ -40,7 +41,7 @@ describe("index", () => {
         }, 
         msg = btrzEmitter.buildMessage("ticket.created", attrs);
 
-      expect(msg.id).to.not.be.eql(undefined);
+      expect(msg.id).to.match(uuidReg);
       expect(msg.providerId).to.be.eql(attrs.providerId);
       expect(msg.data).to.be.eql({});
       expect(msg.ts).to.not.be.eql(undefined);

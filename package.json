@@ -29,7 +29,8 @@
   },
   "homepage": "https://github.com/Betterez/btrz-webhooks-emitter",
   "dependencies": {
-    "btrz-sqs": "^1.2.0"
+    "btrz-sqs": "^1.2.0",
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
     "chai": "latest",

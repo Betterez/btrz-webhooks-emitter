@@ -8,9 +8,9 @@ This lib will use the following ENV variables:
   * AWS_SERVICE_SECRET
   * SQS_QUEUE_URL
 
-# Instalation
-.
 # How to use
+
+    const btrzEmitter = require("btrz-webhooks-emitter");
 
     const attrs = {
       providerId: "123",
@@ -19,7 +19,11 @@ This lib will use the following ENV variables:
 
     btrzEmitter.emitEvent("transaction.created", attrs);
 
-`btrzEmitter.emitEvent()` will return a promise with the result.
+`btrzEmitter.emitEvent()` will send asynchronously a message to SQS and no response, it will log an error if exists.
 
+It's recommendable to send a third param with the logger you are using:
+    
+    btrzEmitter.emitEvent("transaction.created", attrs, logger);
+    
 # Test
 `AWS_SERVICE_KEY=YOUR_KEY AWS_SERVICE_SECRET=YOUR_SECRET_KEY SQS_QUEUE_NAME=YOUR_QUEUE_URL npm test`

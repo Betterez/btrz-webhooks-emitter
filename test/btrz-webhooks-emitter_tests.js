@@ -3,20 +3,44 @@
 describe("index", () => {
   const expect = require("chai").expect,
     btrzEmitter = require("../index.js"),
+    logger = require("./helpers/logger"),
+    sinon = require("sinon"),
     uuidReg = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
   describe("emitEvent", () => {
-    it("should return the result of the msg sent to sqs", (done) => {
-      const attrs = {
-        providerId: "123",
-        data: {foo: "bar"}
-      };
+    it("should send the msg to sqs", () => {
+      const spy = sinon.spy(logger, "error"),
+        attrs = {
+          providerId: "123",
+          data: {foo: "bar"}
+        };
 
-      btrzEmitter.emitEvent("transaction.created", attrs)
-        .then((ok) => {
-          expect(ok).to.be.eql(true);
-          done();
-        });
+      btrzEmitter.emitEvent("transaction.created", attrs, logger);
+      expect(spy.called).to.be.eql(false);
+      logger.error.restore();
+    });
+
+    it("should log error and do nothing if buildMessage() throw for event name missing", () => {
+      const spy = sinon.spy(logger, "error"),
+        attrs = {
+          providerId: "123",
+          data: {foo: "bar"}
+        };
+
+      btrzEmitter.emitEvent(null, attrs, logger);
+      expect(spy.getCall(0).args[0]).to.be.eql("Error: event name is missing.");
+      logger.error.restore();
+    });
+
+    it("should log error and do nothing if buildMessage() throw for providerId missing", () => {
+      const spy = sinon.spy(logger, "error"),
+        attrs = {
+          data: {foo: "bar"}
+        };
+
+      btrzEmitter.emitEvent("transaction.updated", attrs, logger);
+      expect(spy.getCall(0).args[0]).to.be.eql("Error: providerId is missing in attrs.");
+      logger.error.restore();
     });
   });
 

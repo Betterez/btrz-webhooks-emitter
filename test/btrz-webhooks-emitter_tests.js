@@ -9,15 +9,18 @@ describe("index", () => {
 
   describe("emitEvent", () => {
     it("should send the msg to sqs", () => {
-      const spy = sinon.spy(logger, "error"),
+      const spyError = sinon.spy(logger, "error"),
+        spyInfo = sinon.spy(logger, "info"),
         attrs = {
           providerId: "123",
           data: {foo: "bar"}
         };
 
       btrzEmitter.emitEvent("transaction.created", attrs, logger);
-      expect(spy.called).to.be.eql(false);
+      expect(spyError.called).to.be.eql(false);
+      expect(spyInfo.getCall(0).args[0]).to.contain("transaction.created emitted!");
       logger.error.restore();
+      logger.info.restore();
     });
 
     it("should log error and do nothing if buildMessage() throw for event name missing", () => {
@@ -28,7 +31,7 @@ describe("index", () => {
         };
 
       btrzEmitter.emitEvent(null, attrs, logger);
-      expect(spy.getCall(0).args[0]).to.be.eql("Error: event name is missing.");
+      expect(spy.getCall(0).args[0]).to.contain("Error: event name is missing.");
       logger.error.restore();
     });
 
@@ -39,7 +42,7 @@ describe("index", () => {
         };
 
       btrzEmitter.emitEvent("transaction.updated", attrs, logger);
-      expect(spy.getCall(0).args[0]).to.be.eql("Error: providerId is missing in attrs.");
+      expect(spy.getCall(0).args[0]).to.contain("Error: providerId is missing in attrs.");
       logger.error.restore();
     });
   });

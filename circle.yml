@@ -1,9 +1,9 @@
 machine:
   node:
-    version: 6.12.2
+    version: 8.9.4
 deployment:
   npm:
     branch: master
     commands:
-      - echo -e "$NPM_USERNAME\n$NPM_PASSWORD\n$NPM_EMAIL" | npm login
+      - echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" >> ~/.npmrc
       - npm run publish

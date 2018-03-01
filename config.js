@@ -5,7 +5,7 @@ module.exports = function _default(env) {
       secret: env.AWS_SERVICE_SECRET,
       sqs: {
         webhooks: {
-          queueUrl: env.SQS_QUEUE_NAME,
+          queueUrl: env.SQS_QUEUE_URL,
           region: "us-east-1"
         }
       }

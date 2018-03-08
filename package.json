@@ -1,12 +1,11 @@
 {
   "name": "btrz-webhooks-emitter",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Betterez simple client to emit events to the webhooks pipeline",
   "main": "index.js",
   "scripts": {
     "test": "NODE_ENV=test multi='xunit=test-results/xunit.xml spec=-' node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- --ui bdd -R mocha-multi -t 5000",
-    "test-w": "NODE_ENV=test node_modules/mocha/bin/mocha -w",
-    "publish": "publish"
+    "test-w": "NODE_ENV=test node_modules/mocha/bin/mocha -w"
   },
   "repository": {
     "type": "git",
@@ -38,7 +37,6 @@
     "istanbul": "^0.4.1",
     "mocha": "latest",
     "mocha-multi": "latest",
-    "publish": "^0.5.0",
     "sinon": "latest",
     "xunit-file": "latest"
   }

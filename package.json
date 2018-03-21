@@ -39,6 +39,7 @@
     "mocha": "latest",
     "mocha-multi": "latest",
     "sinon": "latest",
-    "xunit-file": "latest"
+    "xunit-file": "latest",
+    "publish": "^0.5.0"
   }
 }

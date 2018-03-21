@@ -23,6 +23,7 @@ describe("index", () => {
           spyInfo = sinon.spy(logger, "info"),
           attrs = {
             providerId: "123",
+            apiKey: "mWt90Taop90Gadobmi5FRdoZC5OxxXrXjn8",
             data: {foo: "bar"}
           };
 
@@ -51,6 +52,17 @@ describe("index", () => {
         btrzEmitter.emitEvent("transaction.updated", attrs, logger);
         expect(spy.getCall(0).args[0]).to.contain("Error: providerId is missing in attrs.");
       });
+
+      it("should log error and do nothing if buildMessage() throw for apiKey missing", () => {
+        const spy = sinon.spy(logger, "error"),
+          attrs = {
+            providerId: "123",
+            data: {foo: "bar"}
+          };
+
+        btrzEmitter.emitEvent("transaction.updated", attrs, logger);
+        expect(spy.getCall(0).args[0]).to.contain("Error: apiKey is missing in attrs.");
+      });
     });
   });
 
@@ -59,12 +71,14 @@ describe("index", () => {
       it("should return the object with the data in the attrs object", () => {
         const attrs = {
             providerId: "123",
+            apiKey: "mWt90Taop90Gadobmi5FRdoZC5OxxXrXjn8",
             data: {foo: "bar"}
           }, 
           msg = btrzEmitter.buildMessage("transaction.created", attrs);
 
         expect(msg.id).to.match(uuidReg);
         expect(msg.providerId).to.be.eql(attrs.providerId);
+        expect(msg.apiKey).to.be.eql(attrs.apiKey);
         expect(msg.data).to.be.eql(attrs.data);
         expect(msg.ts).to.not.be.eql(undefined);
         expect(msg.event).to.be.eql("transaction.created");
@@ -72,12 +86,14 @@ describe("index", () => {
 
       it("should return the object using data empty object as default", () => {
         const attrs = {
-            providerId: "123"
+            providerId: "123",
+            apiKey: "mWt90Taop90Gadobmi5FRdoZC5OxxXrXjn8"
           }, 
           msg = btrzEmitter.buildMessage("ticket.created", attrs);
 
         expect(msg.id).to.match(uuidReg);
         expect(msg.providerId).to.be.eql(attrs.providerId);
+        expect(msg.apiKey).to.be.eql(attrs.apiKey);
         expect(msg.data).to.be.eql({});
         expect(msg.ts).to.not.be.eql(undefined);
         expect(msg.event).to.be.eql("ticket.created");
@@ -93,6 +109,19 @@ describe("index", () => {
         }
 
         expect(sut).to.throw("providerId is missing in attrs.");
+      });
+
+      it("should throw if apiKey was not sent", () => {
+        const attrs = {
+          providerId: "123",
+          data: {foo: "bar"}
+        };
+
+        function sut() {
+          btrzEmitter.buildMessage("transaction.created", attrs);
+        }
+
+        expect(sut).to.throw("apiKey is missing in attrs.");
       });
 
       it("should throw if the event name is not sent", () => {

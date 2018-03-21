@@ -26,4 +26,4 @@ It's recommendable to send a third param with the logger you are using:
     btrzEmitter.emitEvent("transaction.created", attrs, logger);
     
 # Test
-`AWS_SERVICE_KEY=YOUR_KEY AWS_SERVICE_SECRET=YOUR_SECRET_KEY SQS_QUEUE_NAME=YOUR_QUEUE_URL npm test`
+`AWS_SERVICE_KEY=YOUR_KEY AWS_SERVICE_SECRET=YOUR_SECRET_KEY SQS_QUEUE_URL=YOUR_QUEUE_URL npm test`

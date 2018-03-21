@@ -14,6 +14,7 @@ This lib will use the following ENV variables:
 
     const attrs = {
       providerId: "123",
+      apiKey: "PROVIDER_PUBLIC_KEY",
       data: {foo: "bar"}
     };
 

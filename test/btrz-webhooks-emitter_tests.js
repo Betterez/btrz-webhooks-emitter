@@ -18,7 +18,7 @@ describe("index", () => {
 
   describe("integration tests", () => {
     describe("emitEvent", () => {
-      it("should send the msg to sqs", () => {
+      it("should send the msg to sqs", (done) => {
         const spyError = sinon.spy(logger, "error"),
           spyInfo = sinon.spy(logger, "info"),
           attrs = {
@@ -27,9 +27,15 @@ describe("index", () => {
             data: {foo: "bar"}
           };
 
-        btrzEmitter.emitEvent("transaction.created", attrs, logger);
-        expect(spyError.called).to.be.eql(false);
-        expect(spyInfo.getCall(0).args[0]).to.contain("transaction.created emitted!");
+        btrzEmitter.emitEvent("transaction.created", attrs, logger)
+          .then(() => {
+            expect(spyError.called).to.be.eql(false);
+            expect(spyInfo.getCall(0).args[0]).to.contain("transaction.created emitted!");
+            done();
+          })
+          .catch((err) => {
+            done(err);
+          });
       });
 
       it("should log error and do nothing if buildMessage() throw for event name missing", () => {

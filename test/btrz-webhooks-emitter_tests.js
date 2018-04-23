@@ -73,7 +73,7 @@ describe("index", () => {
   });
 
   describe("unit tests", () => {
-    describe("buildMessage", () => {
+    describe("buildMessage()", () => {
       it("should return the object with the data in the attrs object", () => {
         const attrs = {
             providerId: "123",
@@ -162,6 +162,78 @@ describe("index", () => {
         }
 
         expect(sut).to.throw("event name must be a string.");
+      });
+
+      it("should return the object with allowed fields in data", () => {
+        const attrs = {
+            providerId: "123",
+            apiKey: "mWt90Taop90Gadobmi5FRdoZC5OxxXrXjn8",
+            data: {
+              "key1": true,
+              "key2": false,
+              "password": "123"
+            }
+          }, 
+          msg = btrzEmitter.buildMessage("ticket.created", attrs);
+
+        expect(msg.id).to.match(uuidReg);
+        expect(msg.providerId).to.be.eql(attrs.providerId);
+        expect(msg.apiKey).to.be.eql(attrs.apiKey);
+        expect(msg.ts).to.not.be.eql(undefined);
+        expect(msg.event).to.be.eql("ticket.created");
+        expect(Object.keys(msg.data)).to.be.eql(["key1", "key2"]);
+      });
+    });
+
+    describe("filterFields()", () => {
+      describe("with arrays..", () => {
+        it("should pass complete with no denied fields", () => {
+          const data = ["test"];
+          expect(btrzEmitter.filterFields(data)).to.be.eql(data);
+        });
+
+        it("should pass complete because the key is 0", () => {
+          const data = ["password"];
+          expect(btrzEmitter.filterFields(data)).to.be.eql(data);
+        });
+
+        it("should filter off the denied 'password' field", () => {
+          const data = [];
+          data["password"] = "test";
+          expect(btrzEmitter.filterFields(data)).to.be.eql([]);
+        });
+
+        it("should filter off the denied 'credentials' field", () => {
+          const data = [];
+          data["credentials"] = "test";
+          expect(btrzEmitter.filterFields(data)).to.be.eql([]);
+        });
+      });
+
+      describe("with objects..", () => {
+        it("should pass complete with no denied fields", () => {
+          const data = {"test": "password"};
+          expect(btrzEmitter.filterFields(data)).to.be.eql(data);
+        });
+
+        it("should filter off the denied 'password' field", () => {
+          const data = {"password": "test"};
+          expect(btrzEmitter.filterFields(data)).to.be.eql({});
+        });
+
+        it("should filter off the denied 'credentials' field", () => {
+          const data = {"credentials": "test"};
+          expect(btrzEmitter.filterFields(data)).to.be.eql({});
+        });
+
+        it("should filter off the denied fields between allowed ones", () => {
+          const data = {
+            "key1": "foo",
+            "credentials": "test",
+            "another_valid": true
+          };
+          expect(Object.keys(btrzEmitter.filterFields(data))).to.be.eql(["key1", "another_valid"]);
+        });
       });
     });
   });

@@ -27,6 +27,10 @@ It's recommendable to send a third param with the logger you are using:
 ```javascript
 btrzEmitter.emitEvent("transaction.created", attrs, logger);
 ```
+
+# Denied fields
+`denied-fields/index.js` contains information about which fields have to be removed from the data before sending to SQS.
+They can be set by event name like `transaction.created` or using wildcards like `*` or `transaction.*`
  
 # Test
 `AWS_SERVICE_KEY=YOUR_KEY AWS_SERVICE_SECRET=YOUR_SECRET_KEY SQS_QUEUE_URL=YOUR_QUEUE_URL npm test`

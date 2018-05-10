@@ -189,41 +189,41 @@ describe("index", () => {
       describe("with arrays..", () => {
         it("should pass complete with no denied fields", () => {
           const data = ["test"];
-          expect(btrzEmitter.filterFields(data)).to.be.eql(data);
+          expect(btrzEmitter.filterFields("customer.created", data)).to.be.eql(data);
         });
 
         it("should pass complete because the key is 0", () => {
           const data = ["password"];
-          expect(btrzEmitter.filterFields(data)).to.be.eql(data);
+          expect(btrzEmitter.filterFields("customer.created", data)).to.be.eql(data);
         });
 
         it("should filter off the denied 'password' field", () => {
           const data = [];
           data["password"] = "test";
-          expect(btrzEmitter.filterFields(data)).to.be.eql([]);
+          expect(btrzEmitter.filterFields("customer.created", data)).to.be.eql([]);
         });
 
         it("should filter off the denied 'credentials' field", () => {
           const data = [];
           data["credentials"] = "test";
-          expect(btrzEmitter.filterFields(data)).to.be.eql([]);
+          expect(btrzEmitter.filterFields("customer.created", data)).to.be.eql([]);
         });
       });
 
       describe("with objects..", () => {
         it("should pass complete with no denied fields", () => {
           const data = {"test": "password"};
-          expect(btrzEmitter.filterFields(data)).to.be.eql(data);
+          expect(btrzEmitter.filterFields("customer.created", data)).to.be.eql(data);
         });
 
         it("should filter off the denied 'password' field", () => {
           const data = {"password": "test"};
-          expect(btrzEmitter.filterFields(data)).to.be.eql({});
+          expect(btrzEmitter.filterFields("customer.created", data)).to.be.eql({});
         });
 
         it("should filter off the denied 'credentials' field", () => {
           const data = {"credentials": "test"};
-          expect(btrzEmitter.filterFields(data)).to.be.eql({});
+          expect(btrzEmitter.filterFields("customer.created", data)).to.be.eql({});
         });
 
         it("should filter off the denied fields between allowed ones", () => {
@@ -232,7 +232,7 @@ describe("index", () => {
             "credentials": "test",
             "another_valid": true
           };
-          expect(Object.keys(btrzEmitter.filterFields(data))).to.be.eql(["key1", "another_valid"]);
+          expect(Object.keys(btrzEmitter.filterFields("customer.created", data))).to.be.eql(["key1", "another_valid"]);
         });
       });
     });

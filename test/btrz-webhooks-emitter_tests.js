@@ -18,7 +18,7 @@ describe("index", () => {
 
   describe("integration tests", () => {
     describe("emitEvent", () => {
-      it("should send the msg to sqs", (done) => {
+      it("should send the msg to sqs", async () => {
         const spyError = sinon.spy(logger, "error"),
           spyInfo = sinon.spy(logger, "info"),
           attrs = {
@@ -27,46 +27,54 @@ describe("index", () => {
             data: {foo: "bar"}
           };
 
-        btrzEmitter.emitEvent("transaction.created", attrs, logger)
-          .then(() => {
-            expect(spyError.called).to.be.eql(false);
-            expect(spyInfo.getCall(0).args[0]).to.contain("transaction.created emitted!");
-            done();
-          })
-          .catch((err) => {
-            done(err);
-          });
+        await btrzEmitter.emitEvent("transaction.created", attrs, logger);
+        expect(spyError.called).to.be.eql(false);
+        expect(spyInfo.getCall(0).args[0]).to.contain("transaction.created emitted!");
       });
 
-      it("should log error and do nothing if buildMessage() throw for event name missing", () => {
+      it("should NOT mutate the data", async () => {
+        const spyError = sinon.spy(logger, "error"),
+          spyInfo = sinon.spy(logger, "info"),
+          attrs = {
+            providerId: "123",
+            apiKey: "mWt90Taop90Gadobmi5FRdoZC5OxxXrXjn8",
+            data: {foo: "bar", password: "123"}
+          },
+          originalData = Object.assign({}, attrs.data);
+
+        await btrzEmitter.emitEvent("transaction.created", attrs, logger);
+        expect(attrs.data).to.be.eql(originalData);
+      });
+
+      it("should log error and do nothing if buildMessage() throw for event name missing", async () => {
         const spy = sinon.spy(logger, "error"),
           attrs = {
             providerId: "123",
             data: {foo: "bar"}
           };
 
-        btrzEmitter.emitEvent(null, attrs, logger);
+        await btrzEmitter.emitEvent(null, attrs, logger);
         expect(spy.getCall(0).args[0]).to.contain("Error: event name is missing.");
       });
 
-      it("should log error and do nothing if buildMessage() throw for providerId missing", () => {
+      it("should log error and do nothing if buildMessage() throw for providerId missing", async () => {
         const spy = sinon.spy(logger, "error"),
           attrs = {
             data: {foo: "bar"}
           };
 
-        btrzEmitter.emitEvent("transaction.updated", attrs, logger);
+        await btrzEmitter.emitEvent("transaction.updated", attrs, logger);
         expect(spy.getCall(0).args[0]).to.contain("Error: providerId is missing in attrs.");
       });
 
-      it("should log error and do nothing if buildMessage() throw for apiKey missing", () => {
+      it("should log error and do nothing if buildMessage() throw for apiKey missing", async () => {
         const spy = sinon.spy(logger, "error"),
           attrs = {
             providerId: "123",
             data: {foo: "bar"}
           };
 
-        btrzEmitter.emitEvent("transaction.updated", attrs, logger);
+        await btrzEmitter.emitEvent("transaction.updated", attrs, logger);
         expect(spy.getCall(0).args[0]).to.contain("Error: apiKey is missing in attrs.");
       });
     });

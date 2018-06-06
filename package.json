@@ -31,7 +31,8 @@
   "dependencies": {
     "btrz-sqs": "^1.2.0",
     "eslint": "^4.19.1",
-    "uuid": "^3.2.1"
+    "uuid": "^3.2.1",
+    "btrz-webhooks-denied-fields": "git+ssh://git@github.com/Betterez/btrz-webhooks-denied-fields.git#master"
   },
   "devDependencies": {
     "chai": "latest",

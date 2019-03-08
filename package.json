@@ -30,7 +30,6 @@
   "homepage": "https://github.com/Betterez/btrz-webhooks-emitter",
   "dependencies": {
     "btrz-sqs": "^1.2.0",
-    "eslint": "^4.19.1",
     "uuid": "^3.2.1",
     "btrz-webhooks-denied-fields": "git+ssh://git@github.com/Betterez/btrz-webhooks-denied-fields.git#master"
   },
@@ -42,6 +41,12 @@
     "mocha-multi": "latest",
     "sinon": "latest",
     "xunit-file": "latest",
-    "publish": "^0.5.0"
+    "publish": "^0.5.0",
+    "eslint-config-btrz": "^1.1.2",
+    "eslint": "^4.19.1 || ^5.3.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-html": "^5.0.3",
+    "eslint-plugin-mocha": "^5.2.1",
+    "eslint-plugin-vue": "^5.1.0"
   }
 }

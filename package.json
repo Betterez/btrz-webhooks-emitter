@@ -1,6 +1,6 @@
 {
   "name": "btrz-webhooks-emitter",
-  "version": "0.3.11",
+  "version": "0.3.12",
   "description": "Betterez simple client to emit events to the webhooks pipeline",
   "main": "index.js",
   "scripts": {
@@ -37,7 +37,7 @@
     "chai": "latest",
     "chance": "0.7.1",
     "istanbul": "^0.4.1",
-    "mocha": "latest",
+    "mocha": "^5.2.0",
     "mocha-multi": "latest",
     "sinon": "latest",
     "xunit-file": "latest",

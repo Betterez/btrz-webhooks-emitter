@@ -229,9 +229,9 @@ describe("index", () => {
           expect(btrzEmitter.filterFields("customer.created", data)).to.be.eql({});
         });
 
-        it("should filter off the denied 'credentials' and 'createdAt' fields", () => {
+        it("should filter off the denied 'credentials' field", () => {
           const data = {"credentials": "test", "createdAt": "10:00"};
-          expect(btrzEmitter.filterFields("customer.created", data)).to.be.eql({});
+          expect(btrzEmitter.filterFields("customer.created", data)).to.be.eql({"createdAt": "10:00"});
         });
 
         it("should filter off the denied fields between allowed ones", () => {

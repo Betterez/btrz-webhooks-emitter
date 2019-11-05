@@ -14,7 +14,6 @@ const btrzEmitter = require("btrz-webhooks-emitter");
 
 const attrs = {
   providerId: "123",
-  apiKey: "PROVIDER_PUBLIC_KEY",
   data: {foo: "bar"}
 };
 

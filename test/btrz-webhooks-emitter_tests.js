@@ -1,11 +1,9 @@
-"use strict";
-
 describe("index", () => {
-  const expect = require("chai").expect,
-    btrzEmitter = require("../index.js"),
-    logger = require("./helpers/logger"),
-    sinon = require("sinon"),
-    uuidReg = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  const expect = require("chai").expect;
+  const btrzEmitter = require("../index.js");
+  const logger = require("./helpers/logger.js");
+  const sinon = require("sinon");
+  const uuidReg = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
   afterEach(() => {
     if (logger.error.restore) {
@@ -19,15 +17,16 @@ describe("index", () => {
   describe("integration tests", () => {
     describe("emitEvent", () => {
       it("should send the msg to sqs", async () => {
-        const spyError = sinon.spy(logger, "error"),
-          spyInfo = sinon.spy(logger, "info"),
-          attrs = {
-            providerId: "123",
-            data: {foo: "bar"}
-          };
+        const spyError = sinon.spy(logger, "error");
+        const spyInfo = sinon.spy(logger, "info");
+        const attrs = {
+          providerId: "123",
+          data: {foo: "bar"}
+        };
 
         await btrzEmitter.emitEvent("transaction.created", attrs, logger);
         expect(spyError.called).to.be.eql(false);
+        console.log(spyInfo);
         expect(spyInfo.getCall(0).args[0]).to.contain("transaction.created emitted!");
       });
 

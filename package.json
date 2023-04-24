@@ -4,8 +4,8 @@
   "description": "Betterez simple client to emit events to the webhooks pipeline",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test multi='xunit=test-results/xunit.xml spec=-' node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- --ui bdd -R mocha-multi -t 5000",
-    "test-w": "NODE_ENV=test node_modules/mocha/bin/mocha -w",
+    "test": "NODE_ENV=test mocha -- --ui bdd -t 5000 --exit",
+    "test-w": "NODE_ENV=test mocha -w",
     "publish": "publish"
   },
   "repository": {
@@ -29,19 +29,16 @@
   },
   "homepage": "https://github.com/Betterez/btrz-webhooks-emitter",
   "dependencies": {
-    "btrz-sqs": "^1.2.0",
-    "uuid": "^3.2.1",
+    "btrz-sqs": "^2.0.0",
+    "uuid": "^9.0.0",
     "btrz-webhooks-denied-fields": "git+ssh://git@github.com/Betterez/btrz-webhooks-denied-fields.git#master"
   },
   "devDependencies": {
-    "chai": "latest",
-    "chance": "0.7.1",
-    "istanbul": "^0.4.1",
-    "mocha": "^5.2.0",
-    "mocha-multi": "latest",
-    "sinon": "latest",
-    "xunit-file": "latest",
-    "publish": "^0.5.0",
+    "chai": "4.3.7",
+    "chance": "1.1.11",
+    "mocha": "10.2.0",
+    "sinon": "15.0.4",
+    "publish": "0.6.0",
     "eslint-config-btrz": "^1.1.2",
     "eslint": "^4.19.1 || ^5.3.0",
     "eslint-plugin-import": "^2.16.0",

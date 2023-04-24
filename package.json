@@ -1,6 +1,6 @@
 {
   "name": "btrz-webhooks-emitter",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Betterez simple client to emit events to the webhooks pipeline",
   "main": "index.js",
   "scripts": {

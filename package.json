@@ -4,7 +4,7 @@
   "description": "Betterez simple client to emit events to the webhooks pipeline",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test mocha -- --ui bdd -t 5000 --exit",
+    "test": "NODE_ENV=test mocha --ui bdd -t 5000 --exit",
     "test-w": "NODE_ENV=test mocha -w",
     "publish": "publish"
   },
@@ -29,21 +29,18 @@
   },
   "homepage": "https://github.com/Betterez/btrz-webhooks-emitter",
   "dependencies": {
-    "btrz-sqs": "^2.0.0",
-    "uuid": "^9.0.0",
+    "btrz-sqs": "^2.1.0",
+    "uuid": "11.0.5",
     "btrz-webhooks-denied-fields": "git+ssh://git@github.com/Betterez/btrz-webhooks-denied-fields.git#master"
   },
   "devDependencies": {
     "chai": "4.3.7",
-    "chance": "1.1.11",
-    "mocha": "10.2.0",
-    "sinon": "15.0.4",
+    "chance": "1.1.12",
+    "mocha": "11.1.0",
     "publish": "0.6.0",
     "eslint-config-btrz": "^1.1.2",
     "eslint": "^4.19.1 || ^5.3.0",
     "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-html": "^5.0.3",
-    "eslint-plugin-mocha": "^5.2.1",
-    "eslint-plugin-vue": "^5.1.0"
+    "eslint-plugin-mocha": "^5.2.1"
   }
 }

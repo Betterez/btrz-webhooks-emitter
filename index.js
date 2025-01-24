@@ -1,3 +1,1 @@
-"use strict";
-
-module.exports = require("./lib/btrz-webhooks-emitter");
+module.exports = require("./lib/btrz-webhooks-emitter.js");

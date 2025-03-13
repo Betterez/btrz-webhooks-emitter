@@ -60,5 +60,8 @@ typings/
 # test coverage
 test-results/
 
+# IDE files
+.idea
+
 package-lock.json
 

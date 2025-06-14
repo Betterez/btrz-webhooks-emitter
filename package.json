@@ -31,6 +31,7 @@
   "dependencies": {
     "btrz-sqs": "^2.1.0",
     "uuid": "11.0.5",
+    "btrz-monitoring": "git+ssh://git@github.com/Betterez/btrz-monitoring.git#v0.15.0",
     "btrz-webhooks-denied-fields": "git+ssh://git@github.com/Betterez/btrz-webhooks-denied-fields.git#master"
   },
   "devDependencies": {

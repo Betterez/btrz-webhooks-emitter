@@ -1,8 +1,19 @@
 describe("index", () => {
   const expect = require("chai").expect;
+  const zlib = require("zlib");
   const btrzEmitter = require("../index.js");
   const logger = require("./helpers/logger.js");
   const uuidReg = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+  const WEBHOOK_COMPRESS_KEY = "WEBHOOK_COMPRESS";
+  const originalWebhookCompress = process.env[WEBHOOK_COMPRESS_KEY];
+  after(() => {
+    if (originalWebhookCompress !== undefined) {
+      process.env[WEBHOOK_COMPRESS_KEY] = originalWebhookCompress;
+    } else {
+      delete process.env[WEBHOOK_COMPRESS_KEY];
+    }
+  });
 
   afterEach(() => {
     if (logger.error.restore) {
@@ -104,6 +115,74 @@ describe("index", () => {
         expect(msg.ts).to.not.be.eql(undefined);
         expect(msg.event).to.be.eql("ticket.created");
         expect(Object.keys(msg.data)).to.be.eql(["key1", "key2"]);
+      });
+
+      describe("WEBHOOK_COMPRESS", () => {
+        beforeEach(() => {
+          delete process.env[WEBHOOK_COMPRESS_KEY];
+        });
+
+        it("should leave data as object and not set enc when WEBHOOK_COMPRESS is unset", () => {
+          const attrs = {providerId: "123", data: {foo: "bar"}};
+          const msg = btrzEmitter.buildMessage("transaction.created", attrs);
+
+          expect(msg.enc).to.be.undefined;
+          expect(msg.data).to.be.eql({foo: "bar"});
+        });
+
+        it("should leave data as object when WEBHOOK_COMPRESS is not zstd or gzip", () => {
+          process.env[WEBHOOK_COMPRESS_KEY] = "br";
+          const attrs = {providerId: "123", data: {foo: "bar"}};
+          const msg = btrzEmitter.buildMessage("transaction.created", attrs);
+
+          expect(msg.enc).to.be.undefined;
+          expect(msg.data).to.be.eql({foo: "bar"});
+        });
+
+        it("should set enc to zstd and compress data when WEBHOOK_COMPRESS=zstd", () => {
+          process.env[WEBHOOK_COMPRESS_KEY] = "zstd";
+          const attrs = {providerId: "123", data: {foo: "bar", nested: {a: 1}}};
+          const msg = btrzEmitter.buildMessage("transaction.created", attrs);
+
+          expect(msg.enc).to.eql("zstd");
+          expect(typeof msg.data).to.eql("string");
+          const decompressed = JSON.parse(zlib.zstdDecompressSync(Buffer.from(msg.data, "base64")).toString("utf8"));
+          expect(decompressed).to.eql(attrs.data);
+        });
+
+        it("should set enc to gzip and compress data when WEBHOOK_COMPRESS=gzip", () => {
+          process.env[WEBHOOK_COMPRESS_KEY] = "gzip";
+          const attrs = {providerId: "123", data: {foo: "bar"}};
+          const msg = btrzEmitter.buildMessage("transaction.created", attrs);
+
+          expect(msg.enc).to.eql("gzip");
+          expect(typeof msg.data).to.eql("string");
+          const decompressed = JSON.parse(zlib.gunzipSync(Buffer.from(msg.data, "base64")).toString("utf8"));
+          expect(decompressed).to.eql(attrs.data);
+        });
+
+        it("should treat WEBHOOK_COMPRESS case-insensitively (ZSTD)", () => {
+          process.env[WEBHOOK_COMPRESS_KEY] = "ZSTD";
+          const attrs = {providerId: "123", data: {x: 1}};
+          const msg = btrzEmitter.buildMessage("transaction.created", attrs);
+
+          expect(msg.enc).to.eql("zstd");
+          const decompressed = JSON.parse(zlib.zstdDecompressSync(Buffer.from(msg.data, "base64")).toString("utf8"));
+          expect(decompressed).to.eql({x: 1});
+        });
+
+        it("should compress filtered data (only allowed fields) when using zstd", () => {
+          process.env[WEBHOOK_COMPRESS_KEY] = "zstd";
+          const attrs = {
+            providerId: "123",
+            data: {key1: "a", password: "secret", key2: "b"}
+          };
+          const msg = btrzEmitter.buildMessage("ticket.created", attrs);
+
+          expect(msg.enc).to.eql("zstd");
+          const decompressed = JSON.parse(zlib.zstdDecompressSync(Buffer.from(msg.data, "base64")).toString("utf8"));
+          expect(decompressed).to.eql({key1: "a", key2: "b"});
+        });
       });
     });
 

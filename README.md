@@ -7,6 +7,7 @@ This lib will use the following ENV variables:
   * AWS_SERVICE_KEY
   * AWS_SERVICE_SECRET
   * SQS_QUEUE_URL
+  * WEBHOOK_COMPRESS (optional) – when set to `zstd` or `gzip`, the message `data` payload is compressed (base64-encoded); when unset or any other value, messages stay plain. Values are case-insensitive.
 
 # How to use
 ```javascript

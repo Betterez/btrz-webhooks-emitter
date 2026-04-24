@@ -1,10 +1,11 @@
-describe("index", () => {
-  const expect = require("chai").expect;
-  const zlib = require("zlib");
-  const btrzEmitter = require("../index.js");
-  const logger = require("./helpers/logger.js");
-  const uuidReg = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const {after, afterEach, beforeEach, describe, it} = require("node:test");
+const assert = require("node:assert/strict");
+const zlib = require("zlib");
+const btrzEmitter = require("../index.js");
+const logger = require("./helpers/logger.js");
+const uuidReg = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
+describe("index", () => {
   const WEBHOOK_COMPRESS_KEY = "WEBHOOK_COMPRESS";
   const originalWebhookCompress = process.env[WEBHOOK_COMPRESS_KEY];
   after(() => {
@@ -33,11 +34,11 @@ describe("index", () => {
         };
         const msg = btrzEmitter.buildMessage("transaction.created", attrs);
 
-        expect(msg.id).to.match(uuidReg);
-        expect(msg.providerId).to.be.eql(attrs.providerId);
-        expect(msg.data).to.be.eql(attrs.data);
-        expect(msg.ts).to.not.be.eql(undefined);
-        expect(msg.event).to.be.eql("transaction.created");
+        assert.match(msg.id, uuidReg);
+        assert.deepStrictEqual(msg.providerId, attrs.providerId);
+        assert.deepStrictEqual(msg.data, attrs.data);
+        assert.notStrictEqual(msg.ts, undefined);
+        assert.deepStrictEqual(msg.event, "transaction.created");
       });
 
       it("should return the object using data empty object as default", () => {
@@ -46,11 +47,11 @@ describe("index", () => {
         };
         const msg = btrzEmitter.buildMessage("ticket.created", attrs);
 
-        expect(msg.id).to.match(uuidReg);
-        expect(msg.providerId).to.be.eql(attrs.providerId);
-        expect(msg.data).to.be.eql({});
-        expect(msg.ts).to.not.be.eql(undefined);
-        expect(msg.event).to.be.eql("ticket.created");
+        assert.match(msg.id, uuidReg);
+        assert.deepStrictEqual(msg.providerId, attrs.providerId);
+        assert.deepStrictEqual(msg.data, {});
+        assert.notStrictEqual(msg.ts, undefined);
+        assert.deepStrictEqual(msg.event, "ticket.created");
       });
 
       it("should throw if providerId was not sent", () => {
@@ -62,7 +63,7 @@ describe("index", () => {
           btrzEmitter.buildMessage("transaction.created", attrs);
         }
 
-        expect(sut).to.throw("providerId is missing in attrs.");
+        assert.throws(sut, new Error("providerId is missing in attrs."));
       });
 
       it("should throw if the event name is not sent", () => {
@@ -70,7 +71,7 @@ describe("index", () => {
           btrzEmitter.buildMessage();
         }
 
-        expect(sut).to.throw("event name is missing.");
+        assert.throws(sut, new Error("event name is missing."));
       });
 
       it("should throw if the event name is empty string", () => {
@@ -83,7 +84,7 @@ describe("index", () => {
           btrzEmitter.buildMessage("", attrs);
         }
 
-        expect(sut).to.throw("event name can not be empty.");
+        assert.throws(sut, new Error("event name can not be empty."));
       });
 
       it("should throw if the event name is not string", () => {
@@ -96,7 +97,7 @@ describe("index", () => {
           btrzEmitter.buildMessage({}, attrs);
         }
 
-        expect(sut).to.throw("event name must be a string.");
+        assert.throws(sut, new Error("event name must be a string."));
       });
 
       it("should return the object with allowed fields in data", () => {
@@ -110,11 +111,11 @@ describe("index", () => {
         };
         const msg = btrzEmitter.buildMessage("ticket.created", attrs);
 
-        expect(msg.id).to.match(uuidReg);
-        expect(msg.providerId).to.be.eql(attrs.providerId);
-        expect(msg.ts).to.not.be.eql(undefined);
-        expect(msg.event).to.be.eql("ticket.created");
-        expect(Object.keys(msg.data)).to.be.eql(["key1", "key2"]);
+        assert.match(msg.id, uuidReg);
+        assert.deepStrictEqual(msg.providerId, attrs.providerId);
+        assert.notStrictEqual(msg.ts, undefined);
+        assert.deepStrictEqual(msg.event, "ticket.created");
+        assert.deepStrictEqual(Object.keys(msg.data), ["key1", "key2"]);
       });
 
       describe("WEBHOOK_COMPRESS", () => {
@@ -126,8 +127,8 @@ describe("index", () => {
           const attrs = {providerId: "123", data: {foo: "bar"}};
           const msg = btrzEmitter.buildMessage("transaction.created", attrs);
 
-          expect(msg.enc).to.be.undefined;
-          expect(msg.data).to.be.eql({foo: "bar"});
+          assert.strictEqual(msg.enc, undefined);
+          assert.deepStrictEqual(msg.data, {foo: "bar"});
         });
 
         it("should leave data as object when WEBHOOK_COMPRESS is not zstd or gzip", () => {
@@ -135,8 +136,8 @@ describe("index", () => {
           const attrs = {providerId: "123", data: {foo: "bar"}};
           const msg = btrzEmitter.buildMessage("transaction.created", attrs);
 
-          expect(msg.enc).to.be.undefined;
-          expect(msg.data).to.be.eql({foo: "bar"});
+          assert.strictEqual(msg.enc, undefined);
+          assert.deepStrictEqual(msg.data, {foo: "bar"});
         });
 
         it("should set enc to zstd and compress data when WEBHOOK_COMPRESS=zstd", () => {
@@ -144,10 +145,10 @@ describe("index", () => {
           const attrs = {providerId: "123", data: {foo: "bar", nested: {a: 1}}};
           const msg = btrzEmitter.buildMessage("transaction.created", attrs);
 
-          expect(msg.enc).to.eql("zstd");
-          expect(typeof msg.data).to.eql("string");
+          assert.deepStrictEqual(msg.enc, "zstd");
+          assert.deepStrictEqual(typeof msg.data, "string");
           const decompressed = JSON.parse(zlib.zstdDecompressSync(Buffer.from(msg.data, "base64")).toString("utf8"));
-          expect(decompressed).to.eql(attrs.data);
+          assert.deepStrictEqual(decompressed, attrs.data);
         });
 
         it("should set enc to gzip and compress data when WEBHOOK_COMPRESS=gzip", () => {
@@ -155,10 +156,10 @@ describe("index", () => {
           const attrs = {providerId: "123", data: {foo: "bar"}};
           const msg = btrzEmitter.buildMessage("transaction.created", attrs);
 
-          expect(msg.enc).to.eql("gzip");
-          expect(typeof msg.data).to.eql("string");
+          assert.deepStrictEqual(msg.enc, "gzip");
+          assert.deepStrictEqual(typeof msg.data, "string");
           const decompressed = JSON.parse(zlib.gunzipSync(Buffer.from(msg.data, "base64")).toString("utf8"));
-          expect(decompressed).to.eql(attrs.data);
+          assert.deepStrictEqual(decompressed, attrs.data);
         });
 
         it("should treat WEBHOOK_COMPRESS case-insensitively (ZSTD)", () => {
@@ -166,9 +167,9 @@ describe("index", () => {
           const attrs = {providerId: "123", data: {x: 1}};
           const msg = btrzEmitter.buildMessage("transaction.created", attrs);
 
-          expect(msg.enc).to.eql("zstd");
+          assert.deepStrictEqual(msg.enc, "zstd");
           const decompressed = JSON.parse(zlib.zstdDecompressSync(Buffer.from(msg.data, "base64")).toString("utf8"));
-          expect(decompressed).to.eql({x: 1});
+          assert.deepStrictEqual(decompressed, {x: 1});
         });
 
         it("should compress filtered data (only allowed fields) when using zstd", () => {
@@ -179,9 +180,9 @@ describe("index", () => {
           };
           const msg = btrzEmitter.buildMessage("ticket.created", attrs);
 
-          expect(msg.enc).to.eql("zstd");
+          assert.deepStrictEqual(msg.enc, "zstd");
           const decompressed = JSON.parse(zlib.zstdDecompressSync(Buffer.from(msg.data, "base64")).toString("utf8"));
-          expect(decompressed).to.eql({key1: "a", key2: "b"});
+          assert.deepStrictEqual(decompressed, {key1: "a", key2: "b"});
         });
       });
     });
@@ -190,41 +191,41 @@ describe("index", () => {
       describe("with arrays..", () => {
         it("should pass complete with no denied fields", () => {
           const data = ["test"];
-          expect(btrzEmitter.filterFields("customer.created", data)).to.be.eql(data);
+          assert.deepStrictEqual(btrzEmitter.filterFields("customer.created", data), data);
         });
 
         it("should pass complete because the key is 0", () => {
           const data = ["password"];
-          expect(btrzEmitter.filterFields("customer.created", data)).to.be.eql(data);
+          assert.deepStrictEqual(btrzEmitter.filterFields("customer.created", data), data);
         });
 
         it("should filter off the denied 'password' field", () => {
           const data = [];
           data.password = "test";
-          expect(btrzEmitter.filterFields("customer.created", data)).to.be.eql([]);
+          assert.deepStrictEqual(btrzEmitter.filterFields("customer.created", data), []);
         });
 
         it("should filter off the denied 'credentials' field", () => {
           const data = [];
           data.credentials = "test";
-          expect(btrzEmitter.filterFields("customer.created", data)).to.be.eql([]);
+          assert.deepStrictEqual(btrzEmitter.filterFields("customer.created", data), []);
         });
       });
 
       describe("with objects..", () => {
         it("should pass complete with no denied fields", () => {
           const data = {"test": "password"};
-          expect(btrzEmitter.filterFields("customer.created", data)).to.be.eql(data);
+          assert.deepStrictEqual(btrzEmitter.filterFields("customer.created", data), data);
         });
 
         it("should filter off the denied 'password' field", () => {
           const data = {"password": "test"};
-          expect(btrzEmitter.filterFields("customer.created", data)).to.be.eql({});
+          assert.deepStrictEqual(btrzEmitter.filterFields("customer.created", data), {});
         });
 
         it("should filter off the denied 'credentials' field", () => {
           const data = {"credentials": "test", "createdAt": "10:00"};
-          expect(btrzEmitter.filterFields("customer.created", data)).to.be.eql({"createdAt": "10:00"});
+          assert.deepStrictEqual(btrzEmitter.filterFields("customer.created", data), {"createdAt": "10:00"});
         });
 
         it("should filter off the denied fields between allowed ones", () => {
@@ -233,7 +234,7 @@ describe("index", () => {
             "credentials": "test",
             "another_valid": true
           };
-          expect(Object.keys(btrzEmitter.filterFields("customer.created", data))).to.be.eql(["key1", "another_valid"]);
+          assert.deepStrictEqual(Object.keys(btrzEmitter.filterFields("customer.created", data)), ["key1", "another_valid"]);
         });
       });
     });

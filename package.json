@@ -4,9 +4,10 @@
   "description": "Betterez simple client to emit events to the webhooks pipeline",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test mocha --ui bdd -t 5000 --exit",
-    "test-w": "NODE_ENV=test mocha -w",
-    "publish": "publish"
+    "test": "NODE_ENV=test node --test test/*_tests.js",
+    "test-w": "NODE_ENV=test node --test --watch test/*_tests.js",
+    "preversion": "npm test",
+    "postversion": "git push origin master && git push --tags"
   },
   "repository": {
     "type": "git",
@@ -29,19 +30,14 @@
   },
   "homepage": "https://github.com/Betterez/btrz-webhooks-emitter",
   "dependencies": {
-    "btrz-sqs": "^2.1.0",
-    "uuid": "11.0.5",
-    "btrz-monitoring": "git+ssh://git@github.com/Betterez/btrz-monitoring.git#v0.15.0",
-    "btrz-webhooks-denied-fields": "git+ssh://git@github.com/Betterez/btrz-webhooks-denied-fields.git#master"
+    "btrz-monitoring": "git+ssh://git@github.com/Betterez/btrz-monitoring.git#v0.24.0",
+    "btrz-sqs": "2.3.0",
+    "btrz-webhooks-denied-fields": "git+ssh://git@github.com/Betterez/btrz-webhooks-denied-fields.git#master",
+    "uuid": "14.0.0"
   },
   "devDependencies": {
-    "chai": "4.3.7",
-    "chance": "1.1.12",
-    "mocha": "11.1.0",
-    "publish": "0.6.0",
-    "eslint-config-btrz": "^1.1.2",
     "eslint": "^4.19.1 || ^5.3.0",
-    "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-mocha": "^5.2.1"
+    "eslint-config-btrz": "^1.1.2",
+    "eslint-plugin-import": "^2.16.0"
   }
 }

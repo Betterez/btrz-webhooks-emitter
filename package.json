@@ -7,6 +7,7 @@
     "test": "NODE_ENV=test node --test test/*_tests.js",
     "test-w": "NODE_ENV=test node --test --watch test/*_tests.js",
     "lint": "eslint .",
+    "prepare": "git config core.hooksPath .githooks",
     "preversion": "npm test && npm run lint",
     "postversion": "git push origin master && git push --tags"
   },

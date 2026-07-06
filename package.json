@@ -6,7 +6,8 @@
   "scripts": {
     "test": "NODE_ENV=test node --test test/*_tests.js",
     "test-w": "NODE_ENV=test node --test --watch test/*_tests.js",
-    "preversion": "npm test",
+    "lint": "eslint .",
+    "preversion": "npm test && npm run lint",
     "postversion": "git push origin master && git push --tags"
   },
   "repository": {
@@ -30,14 +31,14 @@
   },
   "homepage": "https://github.com/Betterez/btrz-webhooks-emitter",
   "dependencies": {
-    "btrz-monitoring": "git+ssh://git@github.com/Betterez/btrz-monitoring.git#v0.24.0",
-    "btrz-sqs": "2.3.0",
+    "btrz-monitoring": "git+ssh://git@github.com/Betterez/btrz-monitoring.git#v0.26.0",
+    "btrz-sqs": "2.4.0",
     "btrz-webhooks-denied-fields": "git+ssh://git@github.com/Betterez/btrz-webhooks-denied-fields.git#master",
-    "uuid": "14.0.0"
+    "uuid": "14.0.1"
   },
   "devDependencies": {
-    "eslint": "^4.19.1 || ^5.3.0",
-    "eslint-config-btrz": "^1.1.2",
-    "eslint-plugin-import": "^2.16.0"
+    "@eslint/eslintrc": "^3.3.5",
+    "eslint": "^10.6.0",
+    "eslint-config-btrz-base": "2.0.0"
   }
 }

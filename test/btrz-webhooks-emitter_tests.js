@@ -104,9 +104,9 @@ describe("index", () => {
         const attrs = {
           providerId: "123",
           data: {
-            "key1": true,
-            "key2": false,
-            "password": "123"
+            key1: true,
+            key2: false,
+            password: "123"
           }
         };
         const msg = btrzEmitter.buildMessage("ticket.created", attrs);
@@ -214,25 +214,25 @@ describe("index", () => {
 
       describe("with objects..", () => {
         it("should pass complete with no denied fields", () => {
-          const data = {"test": "password"};
+          const data = {test: "password"};
           assert.deepStrictEqual(btrzEmitter.filterFields("customer.created", data), data);
         });
 
         it("should filter off the denied 'password' field", () => {
-          const data = {"password": "test"};
+          const data = {password: "test"};
           assert.deepStrictEqual(btrzEmitter.filterFields("customer.created", data), {});
         });
 
         it("should filter off the denied 'credentials' field", () => {
-          const data = {"credentials": "test", "createdAt": "10:00"};
-          assert.deepStrictEqual(btrzEmitter.filterFields("customer.created", data), {"createdAt": "10:00"});
+          const data = {credentials: "test", createdAt: "10:00"};
+          assert.deepStrictEqual(btrzEmitter.filterFields("customer.created", data), {createdAt: "10:00"});
         });
 
         it("should filter off the denied fields between allowed ones", () => {
           const data = {
-            "key1": "foo",
-            "credentials": "test",
-            "another_valid": true
+            key1: "foo",
+            credentials: "test",
+            another_valid: true
           };
           assert.deepStrictEqual(Object.keys(btrzEmitter.filterFields("customer.created", data)), ["key1", "another_valid"]);
         });
